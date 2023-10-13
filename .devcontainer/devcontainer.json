@@ -1,0 +1,40 @@
+{
+	"name": "Python 3.11",
+	"build": {
+		"dockerfile": "Dockerfile",
+		// pick arm64 or amd64
+		"args": { "PLATFORM": "amd64" }
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	"runArgs": [
+		"--platform=linux/amd64"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-toolsai.jupyter",
+				"demystifying-javascript.python-extensions-pack",
+				"ms-python.python"
+			]
+		}
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {}
+	}
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}

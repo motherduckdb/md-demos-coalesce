@@ -1,0 +1,12 @@
+
+md-dbt/target/
+md-dbt/dbt_packages/
+md-dbt/logs/
+md-dbt/.env
+
+md-evidence/.evidence/template
+md-evidence/.svelte-kit
+md-evidence/build
+md-evidence/node_modules
+md-evidence/.DS_Store
+md-evidence/.vscode/settings.json

@@ -1,0 +1,13 @@
+dbt_demo:
+  outputs:
+    dev:
+      type: duckdb
+      path: "md:my_db?motherduck_token={{env_var('MOTHERDUCK_TOKEN')}}"
+      extensions:
+        - httpfs
+        - parquet
+      settings:
+        s3_region: us-east-1
+        s3_access_key_id: "{{ env_var('AWS_ACCESS_KEY_ID') }}"
+        s3_secret_access_key: "{{ env_var('AWS_SECRET_ACCESS_KEY') }}"
+  target: dev
