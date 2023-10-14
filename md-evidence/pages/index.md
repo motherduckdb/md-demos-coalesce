@@ -1,83 +1,178 @@
 ---
-title: Welcome to Evidence
+title: DuckDB 🦆 - Python 🐍 downloads
 ---
+<GithubStarCount user='duckdb' repo='duckdb'/>
 
-_Build polished data products with SQL and Markdown_
-
-This demo [connects](/settings) to a local DuckDB file `needful_things.duckdb`.
-
-<LineChart
-  data={orders_by_month}
-  y=sales
-  yFmt=usd0k
-  title = "Sales by Month, USD"
+## How many people download DuckDB ? 
+<BigValue 
+    title='Total download past 2 years'
+    data={count_over_month} 
+    value='download_count' 
+    fmt='#,##0,,"M"'
+/>
+<BigValue 
+    data={count_september} 
+    value='download_sum_september_2023' 
+    fmt='#,##0,,"M"'
 />
 
-## Write in Markdown
-
-Evidence renders markdown files into web pages. This page is:
-`[project]/pages/index.md`.
-
-## Run SQL using Code Fences
-
-```sql orders_by_month
-select
-  date_trunc('month', order_datetime) as order_month,
-  count(*) as number_of_orders,
-  sum(sales) as sales,
-  sum(sales)/count(*) as average_order_value
-from orders
-where order_datetime >= '2020-01-01'
-group by 1 order by 1 desc
+```sql count_over_month
+SELECT  SUM(download_count) as download_count
+FROM weekly_download
 ```
 
-In your markdown file, you can include SQL queries in code fences. Evidence will run these queries through your database and return the results to the page.
-
-To see the queries on a page, click the 3-dot menu at the top right of the page and Show Queries. You can see both the SQL and the query results by interacting with the query above.
-
-
-## Visualize Data with Components
-
-### Value in Text
-
-Last month customers placed **<Value data={orders_by_month} column=number_of_orders/>** orders. The AOV was **<Value data={orders_by_month} column=average_order_value fmt=usd2/>**.
-
-### Big Value 
-<BigValue data={orders_by_month} value=sales fmt=usd0/>
-<BigValue data={orders_by_month} value=number_of_orders />
+```sql count_september
+SELECT 
+    SUM(download_count) AS download_sum_september_2023
+FROM 
+    weekly_download
+WHERE
+    year = 2023 AND week BETWEEN 35 AND 39;
+```
 
 
-### Bar Chart
+```sql download_month
+SELECT 
+    MAKE_DATE(EXTRACT(year FROM week_start_date)::INTEGER, 
+              EXTRACT(month FROM week_start_date)::INTEGER, 
+              1) AS month_start_date,
+    SUM(download_count) AS monthly_downloads
+FROM (
+    SELECT 
+        MAKE_DATE(year, 1, 1) + INTERVAL '7' DAY * (week - 1) AS week_start_date,
+        download_count
+    FROM 
+        weekly_download
+) week_data
+GROUP BY 
+    month_start_date
+ORDER BY 
+    month_start_date DESC;
 
-<BarChart 
-  data={orders_by_month} 
-  y=number_of_orders 
-  fillColor="#488f96"
->
-  <ReferenceArea xMin="2020-03-15" xMax="2021-05-15" label="COVID Impacted" color=red/>
-</BarChart>
+```
 
-> **Try:** Change the chart to a `<LineChart>`.
+```sql download_week 
+SELECT 
+    MAKE_DATE(year, 1, 1) + INTERVAL '7' DAY * (week - 1) AS week_start_date,
+    SUM(download_count) AS weekly_downloads
+FROM 
+    weekly_download
+GROUP BY 
+    year, week
+ORDER BY 
+    week_start_date DESC;
+```
+<LineChart data = {download_week} y=weekly_downloads x=week_start_date  />
 
-### Data Table
+<DataTable data="{download_month}" search="false">
+    <Column id="month_start_date" title="Month Start Date"/>
+    <Column id="monthly_downloads" title="Monthly Downloads" />
+</DataTable>
 
-<DataTable data={orders_by_month} rows=6/>
+## Where does people download DuckDB ?
 
-> **More:** See [all components](https://docs.evidence.dev/components/all-components)
+<WorldMap 
+    data={world} 
+    title="World Map" 
+    subtitle="Downloads by Country" 
+    region=country_name 
+    value=download_count
+    colorScale=red
+/>
 
-# Share with Evidence Cloud
+```sql world
+SELECT  *
+FROM country_download
+```
 
-Evidence Cloud is the easiest way to securely share your project. 
-- Get your project online
-- Authenticate users
-- Schedule data refreshes
 
-  <BigLink href='https://du3tapwtcbi.typeform.com/waitlist?utm_source=cloud-page&typeform-source=evidence.dev'>Deploy to Evidence Cloud &rarr;</BigLink>
+```sql duckdb_version
+WITH weekly_downloads AS (
+    SELECT
+        MAKE_DATE(year, 1, 1) + INTERVAL '7' DAY * (week - 1) AS week_start_date,
+        CONCAT(SPLIT_PART(duckdb_version, '.', 1), '.', SPLIT_PART(duckdb_version, '.', 2)) AS simplified_version,
+        SUM(download_count) AS weekly_downloads
+    FROM
+       weekly_duckdb_version 
+    WHERE 
+        (
+            CAST(SPLIT_PART(duckdb_version, '.', 1) AS INT) > 0 OR 
+            (CAST(SPLIT_PART(duckdb_version, '.', 1) AS INT) = 0 AND CAST(SPLIT_PART(duckdb_version, '.', 2) AS INT) >= 6)
+        )
+        AND (year > 2022 OR (year = 2022 AND week >= 48)) 
+    GROUP BY
+        1, 2 -- Grouping by the position number in the SELECT clause (short-hand)
+),
+distinct_weekly_downloads AS (
+    SELECT DISTINCT
+        week_start_date,
+        simplified_version,
+        weekly_downloads
+    FROM
+        weekly_downloads
+),
+cumulative_downloads AS (
+    SELECT
+        week_start_date,
+        simplified_version,
+        SUM(weekly_downloads) OVER (
+            PARTITION BY simplified_version
+            ORDER BY week_start_date
+        ) AS cum_download
+    FROM
+        distinct_weekly_downloads
+)
+SELECT * FROM cumulative_downloads;
 
-You can use Netlify, Vercel or another static hosting provider to [self-host Evidence](https://docs.evidence.dev/deployment/overview).
+```
 
-# Get Support
+## Which DuckDB version do people use ?
+<LineChart 
+    data={duckdb_version} 
+    x=week_start_date 
+    y=cum_download 
+    series=simplified_version 
+    yAxisTitle="cumulative downloads" 
+    xAxisTitle="day of year"
+/>
 
-- Message us on [Slack](https://slack.evidence.dev/)
-- Read the [Docs](https://docs.evidence.dev/)
-- Open an issue on [Github](https://github.com/evidence-dev/evidence)
+```sql python_version
+WITH weekly_downloads AS (
+    -- Calculate the start date of each week and sum the download counts per Python version
+    SELECT
+        MAKE_DATE(year, 1, 1) + INTERVAL '7' DAY * (week - 1) AS week_start_date,
+        python_major_minor_version,
+        SUM(download_count) AS weekly_downloads
+    FROM
+        weekly_python_version
+    WHERE 
+        download_count IS NOT NULL AND
+        python_major_minor_version IN ('2.7', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11')
+    GROUP BY
+        1, 2
+),
+cumulative_downloads AS (
+    -- Calculate the cumulative download counts per Python version over time
+    SELECT
+        week_start_date,
+        python_major_minor_version,
+        SUM(weekly_downloads) OVER (
+            PARTITION BY python_major_minor_version
+            ORDER BY week_start_date
+        ) AS cum_download
+    FROM
+        weekly_downloads
+)
+SELECT * FROM cumulative_downloads;
+
+```
+
+## Which python version do people use ?
+<LineChart 
+    data={python_version} 
+    x=week_start_date 
+    y=cum_download 
+    series=python_major_minor_version 
+    yAxisTitle="cumulative downloads" 
+    xAxisTitle="week of the year"
+/>
