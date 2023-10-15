@@ -3,17 +3,17 @@ title: DuckDB 🦆 - Python 🐍 downloads
 ---
 <GithubStarCount user='duckdb' repo='duckdb'/>
 
-## How many people download DuckDB ? 
+## How many people downloaded DuckDB ?
 <BigValue 
     title='Total download past 2 years'
     data={count_over_month} 
     value='download_count' 
-    fmt='#,##0,,"M"'
+    fmt='#,##0.00,,"M"'	
 />
 <BigValue 
     data={count_september} 
     value='download_sum_september_2023' 
-    fmt='#,##0,,"M"'
+    fmt='#,##0.00,,"M"'	
 />
 
 <LineChart data = {download_week} y=weekly_downloads x=week_start_date  />
@@ -24,7 +24,7 @@ title: DuckDB 🦆 - Python 🐍 downloads
 </DataTable>
 
 
-## Where does people download DuckDB ?
+## Where do people download DuckDB?
 
 <WorldMap 
     data={world} 
@@ -45,7 +45,7 @@ title: DuckDB 🦆 - Python 🐍 downloads
     xAxisTitle="day of year"
 />
 
-## Which python version do people use ?
+## Which Python version do people use ?
 <LineChart 
     data={python_version} 
     x=week_start_date 
