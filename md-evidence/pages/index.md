@@ -16,12 +16,51 @@ title: DuckDB 🦆 - Python 🐍 downloads
     fmt='#,##0,,"M"'
 />
 
-```sql count_over_month
+<LineChart data = {download_week} y=weekly_downloads x=week_start_date  />
+
+<DataTable data="{download_month}" search="false">
+    <Column id="month_start_date" title="Month Start Date"/>
+    <Column id="monthly_downloads" title="Monthly Downloads" />
+</DataTable>
+
+
+## Where does people download DuckDB ?
+
+<WorldMap 
+    data={world} 
+    title="World Map" 
+    subtitle="Downloads by Country" 
+    region=country_name 
+    value=download_count
+    colorScale=red
+/>
+
+## Which DuckDB version do people use ?
+<LineChart 
+    data={duckdb_version} 
+    x=week_start_date 
+    y=cum_download 
+    series=simplified_version 
+    yAxisTitle="cumulative downloads" 
+    xAxisTitle="day of year"
+/>
+
+## Which python version do people use ?
+<LineChart 
+    data={python_version} 
+    x=week_start_date 
+    y=cum_download 
+    series=python_major_minor_version 
+    yAxisTitle="cumulative downloads" 
+    xAxisTitle="week of the year"
+/>
+
+```count_over_month
 SELECT  SUM(download_count) as download_count
 FROM weekly_download
 ```
 
-```sql count_september
+```count_september
 SELECT 
     SUM(download_count) AS download_sum_september_2023
 FROM 
@@ -31,7 +70,7 @@ WHERE
 ```
 
 
-```sql download_month
+```download_month
 SELECT 
     MAKE_DATE(EXTRACT(year FROM week_start_date)::INTEGER, 
               EXTRACT(month FROM week_start_date)::INTEGER, 
@@ -62,23 +101,7 @@ GROUP BY
 ORDER BY 
     week_start_date DESC;
 ```
-<LineChart data = {download_week} y=weekly_downloads x=week_start_date  />
 
-<DataTable data="{download_month}" search="false">
-    <Column id="month_start_date" title="Month Start Date"/>
-    <Column id="monthly_downloads" title="Monthly Downloads" />
-</DataTable>
-
-## Where does people download DuckDB ?
-
-<WorldMap 
-    data={world} 
-    title="World Map" 
-    subtitle="Downloads by Country" 
-    region=country_name 
-    value=download_count
-    colorScale=red
-/>
 
 ```sql world
 SELECT  *
@@ -126,16 +149,6 @@ SELECT * FROM cumulative_downloads;
 
 ```
 
-## Which DuckDB version do people use ?
-<LineChart 
-    data={duckdb_version} 
-    x=week_start_date 
-    y=cum_download 
-    series=simplified_version 
-    yAxisTitle="cumulative downloads" 
-    xAxisTitle="day of year"
-/>
-
 ```sql python_version
 WITH weekly_downloads AS (
     -- Calculate the start date of each week and sum the download counts per Python version
@@ -166,13 +179,3 @@ cumulative_downloads AS (
 SELECT * FROM cumulative_downloads;
 
 ```
-
-## Which python version do people use ?
-<LineChart 
-    data={python_version} 
-    x=week_start_date 
-    y=cum_download 
-    series=python_major_minor_version 
-    yAxisTitle="cumulative downloads" 
-    xAxisTitle="week of the year"
-/>
