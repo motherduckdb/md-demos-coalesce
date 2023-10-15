@@ -34,5 +34,5 @@ clean-targets:         # directories to be removed by `dbt clean`
 models:
   dbt_demo:
     # Config indicated by + and applies to all files under models/example/
-    example:
-      +materialized: view
+on-run-start:
+  - "{{ register_upstream_external_models() }}"
