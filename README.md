@@ -11,6 +11,7 @@ Requirements :
 * VSCode & [devcontainer extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 * Docker desktop
 * A MotherDuck account & service token
+* Copy queries that are in ./duckdb-pypi/motherduck_ui_queries.sql in the MotherDuck UI
 
 # Setup
 Use the devcontainer feature from VSCode to load the container that will have all requirements :
