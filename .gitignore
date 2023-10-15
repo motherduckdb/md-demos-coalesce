@@ -13,3 +13,5 @@ md-evidence/.DS_Store
 md-evidence/.vscode/settings.json
 
 dataset/*
+
+.DS_Store

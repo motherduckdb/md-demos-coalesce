@@ -5,6 +5,9 @@
 		// pick arm64 or amd64
 		"args": { "PLATFORM": "amd64" }
 	},
+	"settings": {
+        "python.linting.pylintEnabled": false
+    },
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -18,19 +21,18 @@
 		"vscode": {
 			"extensions": [
 				"ms-toolsai.jupyter",
-				"demystifying-javascript.python-extensions-pack",
 				"ms-python.python"
 			]
 		}
 	},
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {}
-	}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	// Install DuckDB CLI and download the demo dataset
+	"postCreateCommand": "make duckdb-install && make dataset"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

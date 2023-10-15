@@ -3,6 +3,10 @@
 # small bash script to manage install/uninstall duckdb on Linux
 set -e  # Exit on any error
 
+# Set default version and installation path
+DEFAULT_VERSION="0.8.1"
+INSTALL_PATH="${HOME}/.local/bin"
+
 # Function to get the system architecture
 get_architecture() {
     local arch
@@ -34,9 +38,6 @@ download_duckdb() {
     rm duckdb.zip
 }
 
-# Set default version and installation path
-DEFAULT_VERSION="0.9.1"
-INSTALL_PATH="${HOME}/.local/bin"
 
 # Ensure that ~/.local/bin exists
 mkdir -p "${INSTALL_PATH}"
