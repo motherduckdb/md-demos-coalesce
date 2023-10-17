@@ -4,7 +4,7 @@
 set -e  # Exit on any error
 
 # Set default version and installation path
-DEFAULT_VERSION="0.8.1"
+DEFAULT_VERSION="0.9.1"
 INSTALL_PATH="${HOME}/.local/bin"
 
 # Function to get the system architecture

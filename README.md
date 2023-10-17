@@ -5,6 +5,8 @@ This demo contains 3 folders :
 - md-dbt : same queries used from the above, to give an highlight on how duckdb/md and dbt works together
 - md-evidence : for local snappy dashboard
 
+You can find the videos of the demo [here](https://drive.google.com/drive/folders/1iIXrcwBg6Iw30U_K9IpFFN0vpOw6W7GI)
+
 See demo script on [Notion](https://www.notion.so/motherduck/Demo-scripts-Coalesce-October-2023-db4753efa7c94fd38c866be7b58b2992?pvs=4)
 
 Requirements : 
